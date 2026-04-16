@@ -1,0 +1,26 @@
+{
+  "$schema": "https://appsettings.umbraco.com/schema/umbraco-package-schema.json",
+  "name": "Content Sync Dashboard",
+  "version": "1.0.0",
+  "allowPublicAccess": false,
+  "extensions": [
+    {
+      "type": "dashboard",
+      "alias": "Umbraco.ContentSync.Dashboard",
+      "name": "Content Sync",
+      "js": "/ContentSync/content-sync-dashboard.js",
+      "element": "content-sync-dashboard",
+      "weight": 10,
+      "meta": {
+        "label": "Content Sync",
+        "pathname": "content-sync"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Content"
+        }
+      ]
+    }
+  ]
+}

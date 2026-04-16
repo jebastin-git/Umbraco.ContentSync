@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Umbraco.ContentSync.Demo</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Umbraco.Cms" Version="17.3.3" />
+    <!-- SQLite persistence for local development / quick starts -->
+    <PackageReference Include="Umbraco.Cms.Persistence.EFCore.Sqlite" Version="17.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Umbraco.ContentSync\Umbraco.ContentSync.csproj" />
+  </ItemGroup>
+
+</Project>

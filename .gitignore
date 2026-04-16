@@ -1,0 +1,99 @@
+# ============================================================
+# .NET
+# ============================================================
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vs/
+.vs/
+
+# NuGet
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+packages/
+!packages/repositories.config
+nuget.config
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+
+# Test results
+TestResults/
+[Cc]overage*/
+*.coverage
+*.coveragexml
+
+# Publish profiles
+**/Properties/PublishProfiles/*.pubxml
+!**/Properties/PublishProfiles/*.pubxml.user
+
+# ============================================================
+# Node / JavaScript
+# ============================================================
+node_modules/
+dist/
+.npm/
+.cache/
+.parcel-cache/
+.vite/
+*.tsbuildinfo
+
+# ============================================================
+# Umbraco
+# ============================================================
+
+# Umbraco runtime data — never commit these
+umbraco/Data/
+umbraco/Logs/
+umbraco/MediaCache/
+
+# Umbraco media uploads
+wwwroot/media/
+
+# SQLite database file (demo project uses SQLite)
+*.db
+*.db-shm
+*.db-wal
+
+# Umbraco-generated JSON schema files (restored via NuGet restore)
+appsettings-schema.json
+appsettings-schema.Umbraco.Cms.json
+umbraco-package-schema.json
+
+# ============================================================
+# IDE / OS
+# ============================================================
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+*.iml
+.vscode/
+!.vscode/extensions.json
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# ============================================================
+# Secrets — never commit
+# ============================================================
+appsettings.Production.json
+appsettings.Staging.json
+*.pfx
+*.p12
+secrets.json

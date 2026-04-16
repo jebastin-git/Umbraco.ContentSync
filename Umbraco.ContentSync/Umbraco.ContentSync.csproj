@@ -1,0 +1,81 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <!--
+      Multi-targeting rationale (Umbraco TFM matrix):
+        net8.0  → Umbraco 14.x  (Bellissima backoffice; first version compatible with our Lit UI)
+        net10.0 → Umbraco 17.x  (current LTS-candidate at time of writing)
+      Umbraco 13.x (net8.0) is intentionally excluded — it uses the AngularJS backoffice
+      which is incompatible with the Lit 3 dashboard shipped by this package.
+    -->
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Umbraco.ContentSync</RootNamespace>
+    <AssemblyName>Umbraco.ContentSync</AssemblyName>
+
+    <!-- NuGet package metadata -->
+    <PackageId>Umbraco.ContentSync</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Umbraco.ContentSync Contributors</Authors>
+    <Description>Content Sync Engine for Umbraco — sync content between environments.</Description>
+    <PackageDescription>Environment-aware content sync for Umbraco 17 with snapshots, property-level diffing, and conflict detection. Includes a backoffice dashboard and a REST API.</PackageDescription>
+    <PackageTags>umbraco content sync cms diff deployment snapshot environment</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/jebastin-git/Umbraco.ContentSync</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/jebastin-git/Umbraco.ContentSync</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <!--
+      Serve wwwroot/ assets at the root path "/" so that
+      wwwroot/ContentSync/content-sync-dashboard.js is available at
+      /ContentSync/content-sync-dashboard.js in the consuming app.
+    -->
+    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+  </PropertyGroup>
+
+  <!-- ASP.NET Core MVC (controllers, routing, DI) without forcing a web SDK -->
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <!--
+    Per-TFM package references — a single Umbraco.Cms version cannot span both net8.0 and
+    net10.0 because Umbraco follows the .NET release cadence (14.x → net8, 17.x → net10).
+    Using a version RANGE rather than a pinned version lets consumers pick up patch releases
+    without waiting for a new release of this package.
+  -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <!--
+      Umbraco 14.x — first release with the Bellissima (Lit-based) backoffice.
+      Lower bound is 14.3.4 (latest stable patch; 14.0.0 had a low-severity CVE).
+    -->
+    <PackageReference Include="Umbraco.Cms" Version="[14.3.4,15.0.0)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <!--
+      Umbraco 17.x — tested baseline.
+      Widen to [16.0.0,18.0.0) once Umbraco 16 compatibility is verified.
+    -->
+    <PackageReference Include="Umbraco.Cms" Version="[17.3.3,18.0.0)" />
+  </ItemGroup>
+
+  <!-- Exclude UI source files (package.json, tsconfig, vite config, src/**) from the NuGet pack.
+       The Razor SDK picks up everything under the project root by default; we only want the
+       compiled output that lands in wwwroot/ContentSync/ to ship in the package. -->
+  <ItemGroup>
+    <Content Remove="UI\**\*" />
+    <None Remove="UI\**\*" />
+  </ItemGroup>
+
+  <!-- Pack the README and icon from the repository root into the NuGet package. -->
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

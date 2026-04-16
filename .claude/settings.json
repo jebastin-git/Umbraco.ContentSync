@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build *)",
+      "Read(//c/Users/jebas/.nuget/packages/umbraco.cms.core/**)",
+      "Read(//c/Users/jebas/.nuget/packages/**)",
+      "Bash(dotnet script *)",
+      "Bash(dotnet-script)",
+      "Bash(dotnet decompile *)",
+      "Bash(dotnet ilspycmd *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Read(//c/GitHub/Umbraco/**)",
+      "Bash(dotnet-script --version)",
+      "Bash(pwsh -Command 'Add-Type -Path '\\\\''Umbraco.Core.dll'\\\\''; [System.AppDomain]::CurrentDomain.GetAssemblies\\(\\) | Where-Object { $_.GetName\\(\\).Name -eq '\\\\''Umbraco.Core'\\\\'' } | ForEach-Object { $_.GetTypes\\(\\) | Where-Object { $_.Name -like '\\\\''*Manifest*'\\\\'' } | Select-Object FullName }')",
+      "Bash(xargs grep *)",
+      "Bash(pwsh -Command ' *)",
+      "Bash(powershell.exe -Command ' *)",
+      "Bash(powershell.exe -NoProfile -Command ' *)",
+      "Bash(dotnet pack *)",
+      "Bash(powershell.exe -Command \"\\(Get-Content Umbraco.ContentSync.csproj\\) -replace '<TargetFramework>net10.0</TargetFramework>','<TargetFrameworks>net8.0;net10.0</TargetFrameworks>' | Set-Content /tmp/csproj_test.csproj\")",
+      "Bash(mkdir -p /tmp/mttest)",
+      "Bash(cp -r \"c:/GitHub/Umbraco/Umbraco.ContentSync/Umbraco.ContentSync/.\" /tmp/mttest/)",
+      "Bash(sed -i 's|<TargetFramework>net10.0</TargetFramework>|<TargetFrameworks>net8.0;net10.0</TargetFrameworks>|' /tmp/mttest/Umbraco.ContentSync.csproj)",
+      "Bash(dotnet restore *)",
+      "Bash(dotnet list *)",
+      "Read(//c/Users/jebas/.claude/projects/c--GitHub-Umbraco-Umbraco-ContentSync/memory/**)"
+    ],
+    "additionalDirectories": [
+      "c:\\GitHub\\Umbraco\\Umbraco.ContentSync.Demo\\wwwroot\\App_Plugins\\Umbraco.ContentSync",
+      "\\tmp"
+    ]
+  }
+}

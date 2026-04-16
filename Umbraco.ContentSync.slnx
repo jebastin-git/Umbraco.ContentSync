@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Umbraco.ContentSync/Umbraco.ContentSync.csproj" />
+  <Project Path="Umbraco.ContentSync.Demo/Umbraco.ContentSync.Demo.csproj" />
+</Solution>
