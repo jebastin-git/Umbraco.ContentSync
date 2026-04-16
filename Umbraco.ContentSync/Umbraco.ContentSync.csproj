@@ -16,7 +16,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>Umbraco.ContentSync</PackageId>
-    <Version>0.1.5</Version>
+    <Version>0.1.6</Version>
     <Authors>Umbraco.ContentSync Contributors</Authors>
     <Description>Content Sync Engine for Umbraco — sync content between environments.</Description>
     <PackageDescription>Environment-aware content sync for Umbraco 17 with snapshots, property-level diffing, and conflict detection. Includes a backoffice dashboard and a REST API.</PackageDescription>
