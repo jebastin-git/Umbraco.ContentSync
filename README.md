@@ -1,6 +1,6 @@
 # Umbraco Content Sync
 
-[![NuGet](https://img.shields.io/nuget/v/Umbraco.ContentSync.svg)](https://www.nuget.org/packages/Umbraco.ContentSync)
+[![NuGet](https://img.shields.io/nuget/v/ContentSync.Umbraco.svg)](https://www.nuget.org/packages/ContentSync.Umbraco)
 [![Umbraco](https://img.shields.io/badge/Umbraco-17-blue)](https://umbraco.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -52,13 +52,13 @@ Umbraco Content Sync adds a first-class sync workflow to the Umbraco backoffice:
 ## Installation
 
 ```bash
-dotnet add package Umbraco.ContentSync
+dotnet add package ContentSync.Umbraco
 ```
 
 Or via the NuGet Package Manager:
 
 ```
-Install-Package Umbraco.ContentSync
+Install-Package ContentSync.Umbraco
 ```
 
 ---

@@ -11,12 +11,12 @@
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Umbraco.ContentSync</RootNamespace>
-    <AssemblyName>Umbraco.ContentSync</AssemblyName>
+    <RootNamespace>ContentSync.Umbraco</RootNamespace>
+    <AssemblyName>ContentSync.Umbraco</AssemblyName>
 
     <!-- NuGet package metadata -->
-    <PackageId>Umbraco.ContentSync</PackageId>
-    <Version>0.1.8</Version>
+    <PackageId>ContentSync.Umbraco</PackageId>
+    <Version>0.1.9</Version>
     <Authors>Umbraco.ContentSync Contributors</Authors>
     <Description>Content Sync Engine for Umbraco — sync content between environments.</Description>
     <PackageDescription>Environment-aware content sync for Umbraco 17 with snapshots, property-level diffing, and conflict detection. Includes a backoffice dashboard and a REST API.</PackageDescription>

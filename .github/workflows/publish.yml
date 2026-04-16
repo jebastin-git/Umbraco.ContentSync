@@ -20,7 +20,6 @@ jobs:
             8.0.x
             10.0.x
 
-      # ✅ CLEAN (fixes leftover artifacts issue)
       - name: Clean
         run: dotnet clean
 
@@ -30,10 +29,8 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      # ✅ PACK ONLY YOUR PROJECT (not entire solution)
       - name: Pack
         run: dotnet pack Umbraco.ContentSync/Umbraco.ContentSync.csproj --configuration Release --no-build
 
-      # ✅ PUSH ONLY YOUR PACKAGE (no wildcards)
       - name: Publish to NuGet
         run: dotnet nuget push "Umbraco.ContentSync/bin/Release/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
