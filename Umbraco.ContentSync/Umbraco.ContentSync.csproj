@@ -28,7 +28,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/jebastin-git/Umbraco.ContentSync</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
+	<UmbracoDisableJsonSchemaAddReferences>true</UmbracoDisableJsonSchemaAddReferences>
     <!--
       Serve wwwroot/ assets at the root path "/" so that
       wwwroot/ContentSync/content-sync-dashboard.js is available at

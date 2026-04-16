@@ -1,3 +1,4 @@
 <Solution>
-  <Project Path="Umbraco.ContentSync.csproj" />
+  <Project Path="../../../../../../../../GitHub/Umbraco/Umbraco.ContentSync/Umbraco.ContentSync.Demo/Umbraco.ContentSync.Demo.csproj" />
+  <Project Path="../../../../../../../../GitHub/Umbraco/Umbraco.ContentSync/Umbraco.ContentSync/Umbraco.ContentSync.csproj" />
 </Solution>
