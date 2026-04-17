@@ -1099,6 +1099,8 @@ f = g([
 function V(i) {
   return i instanceof Error ? i.message : String(i);
 }
+const Lt = f;
 export {
-  f as ContentSyncDashboard
+  f as ContentSyncDashboard,
+  Lt as default
 };

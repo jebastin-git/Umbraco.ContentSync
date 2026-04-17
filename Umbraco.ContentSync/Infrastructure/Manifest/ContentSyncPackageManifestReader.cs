@@ -21,8 +21,7 @@ internal sealed class ContentSyncPackageManifestReader : IPackageManifestReader
             ["type"]    = "dashboard",
             ["alias"]   = "Umbraco.ContentSync.Dashboard",
             ["name"]    = "Content Sync",
-            ["js"]      = "/ContentSync/content-sync-dashboard.js",
-            ["element"] = "content-sync-dashboard",
+            ["element"] = "/ContentSync/content-sync-dashboard.js",
             ["weight"]  = 10,
             ["meta"]    = new JsonObject
             {
