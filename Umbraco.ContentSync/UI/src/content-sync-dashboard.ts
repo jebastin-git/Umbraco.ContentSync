@@ -1,5 +1,7 @@
 import { LitElement, html, css, nothing, type TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
+import { UMB_AUTH_CONTEXT, type UmbAuthContext } from '@umbraco-cms/backoffice/auth';
 
 // ── API response types ──────────────────────────────────────────────────────
 // Mirrors the C# models serialised with System.Text.Json default (camelCase).
@@ -62,7 +64,7 @@ interface SyncImportResult {
 // ── Component ────────────────────────────────────────────────────────────────
 
 @customElement('content-sync-dashboard')
-export class ContentSyncDashboard extends LitElement {
+export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
 
   // ── Styles ────────────────────────────────────────────────────────────────
   // Uses Umbraco UI Library CSS custom properties so the component inherits
@@ -278,9 +280,17 @@ export class ContentSyncDashboard extends LitElement {
   @state() private _success = '';
   @state() private _environment = 'Dev';
 
+  #authContext?: UmbAuthContext;
+
+  // Injected at runtime by UmbElementMixin — declared here for TypeScript.
+  declare consumeContext: <T>(token: unknown, callback: (context: T) => void) => void;
+
   override connectedCallback(): void {
     super.connectedCallback();
-    this._loadSnapshots();
+    this.consumeContext(UMB_AUTH_CONTEXT, (auth: UmbAuthContext) => {
+      this.#authContext = auth;
+      this._loadSnapshots();
+    });
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -541,10 +551,15 @@ export class ContentSyncDashboard extends LitElement {
 
   // ── API helpers ───────────────────────────────────────────────────────────
 
-  // Wraps fetch with credentials: 'include' so the backoffice session cookie
-  // is sent on every request, satisfying the BackOfficeAccess auth policy.
-  private _fetch(url: string, init: RequestInit = {}): Promise<Response> {
-    return fetch(url, { ...init, credentials: 'include' });
+  // Wraps fetch with the backoffice bearer token so requests satisfy the
+  // BackOfficeAccess auth policy. Token is retrieved from UMB_AUTH_CONTEXT.
+  private async _fetch(url: string, init: RequestInit = {}): Promise<Response> {
+    const token = await this.#authContext?.getLatestToken();
+    const headers: Record<string, string> = {
+      ...(init.headers as Record<string, string> ?? {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+    return fetch(url, { ...init, headers });
   }
 
   private async _exportAndRefresh(): Promise<void> {
