@@ -117,17 +117,25 @@ public sealed class SyncController : ControllerBase
     /// Exports all content nodes on the current environment as a portable JSON payload
     /// and automatically persists a snapshot for later review or restore.
     /// </summary>
+    /// <param name="env">
+    /// Logical environment label (e.g. <c>Dev</c>, <c>Staging</c>, <c>Production</c>).
+    /// Stored as metadata on the snapshot so the dropdown on the importing side can
+    /// show where the snapshot came from.
+    /// </param>
     [HttpGet("export")]
     [ProducesResponseType(typeof(SyncExportResult), StatusCodes.Status200OK)]
-    public IActionResult Export()
+    public IActionResult Export([FromQuery] string env = "Dev")
     {
-        var items = _contentProvider.GetAll();
-        var payload = _syncService.Export(items);
+        var items    = _contentProvider.GetAll();
+        var payload  = _syncService.Export(items);
+        var username = User.Identity?.Name ?? "system";
+        var snapshot = _snapshotService.CreateSnapshot(env, username, payload);
 
         return Ok(new SyncExportResult
         {
-            Count = items.Count,
-            Payload = payload
+            Count      = items.Count,
+            Payload    = payload,
+            SnapshotId = snapshot.Id
         });
     }
 

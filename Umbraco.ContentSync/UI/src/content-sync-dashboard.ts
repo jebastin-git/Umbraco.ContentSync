@@ -286,6 +286,57 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
       font-weight: 600;
     }
 
+    /* ── Import section ────────────────────────────────────────────── */
+    .import-section {
+      margin-top: var(--uui-size-layout-1, 24px);
+      padding-top: var(--uui-size-layout-1, 24px);
+      border-top: 1px solid var(--uui-color-border-standalone, #e5e5e5);
+    }
+    .import-hint {
+      font-size: 0.875rem;
+      color: var(--uui-color-text-alt, #666);
+      margin: 0 0 var(--uui-size-space-4, 12px);
+      line-height: 1.5;
+    }
+    .import-hint strong { color: var(--uui-color-text, #1a1a1a); }
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 100px;
+      padding: 8px 10px;
+      border: 1px solid var(--uui-color-border, #c4c4c4);
+      border-radius: var(--uui-border-radius, 3px);
+      background: var(--uui-color-surface, #fff);
+      color: var(--uui-color-text, #1a1a1a);
+      font-family: monospace;
+      font-size: 0.8125rem;
+      resize: vertical;
+      box-sizing: border-box;
+      margin-bottom: var(--uui-size-space-3, 8px);
+    }
+    textarea:focus-visible { outline: 2px solid var(--uui-color-focus, #3544b1); outline-offset: 1px; }
+    textarea:disabled { opacity: 0.5; }
+
+    /* ── Copy-payload button row ───────────────────────────────────── */
+    .copy-row {
+      display: flex;
+      align-items: center;
+      gap: var(--uui-size-space-3, 8px);
+      margin-top: var(--uui-size-space-3, 8px);
+    }
+    .copy-hint {
+      font-size: 0.8125rem;
+      color: var(--uui-color-text-alt, #777);
+    }
+
+    /* ── Zero-changes notice ───────────────────────────────────────── */
+    .no-changes-notice {
+      font-size: 0.875rem;
+      color: var(--uui-color-text-alt, #666);
+      font-style: italic;
+      margin-bottom: var(--uui-size-space-3, 8px);
+    }
+
     /* ── Utility ───────────────────────────────────────────────────── */
     uui-button + uui-button, uui-button + select { margin-left: 0; }
   `;
@@ -300,6 +351,10 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
   @state() private _error = '';
   @state() private _success = '';
   @state() private _environment = 'Dev';
+  @state() private _lastExportedPayload = '';
+  @state() private _importPayload = '';
+  // 'snapshot' = restoring from the dropdown; 'import' = pasted external payload
+  @state() private _syncSource: 'snapshot' | 'import' = 'snapshot';
 
   #authContext?: UmbAuthContext;
 
@@ -323,6 +378,8 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
         ${this._busy ? html`<uui-loader-bar></uui-loader-bar>` : nothing}
 
         ${this._renderSnapshotSection()}
+
+        ${this._renderImportSection()}
 
         ${this._preview !== null ? this._renderPreviewSection() : nothing}
 
@@ -410,7 +467,57 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
             <span class="empty-hint">No snapshots yet — click "Export &amp; Snapshot" to create one.</span>
           `}
         </div>
+        <!-- Copy-payload row: shown after a successful export -->
+        ${this._lastExportedPayload ? html`
+          <div class="copy-row">
+            <uui-button
+              look="secondary"
+              label="Copy the exported JSON payload to clipboard"
+              @click=${this._copyPayload}>
+              Copy payload
+            </uui-button>
+            <span class="copy-hint">Paste this on another environment to sync content across.</span>
+          </div>
+        ` : nothing}
+
       </section>
+    `;
+  }
+
+  private _renderImportSection(): TemplateResult {
+    const hasPayload = this._importPayload.trim().length > 0;
+    return html`
+      <div class="import-section">
+        <h2>Import from another environment</h2>
+        <p class="import-hint">
+          <strong>Cross-environment workflow:</strong>
+          On your <em>source</em> environment click "Export &amp; Snapshot" then "Copy payload".
+          Come back here (your <em>target</em> environment), paste the JSON below, then Preview and Sync.
+        </p>
+        <textarea
+          placeholder="Paste exported JSON payload here…"
+          .value=${this._importPayload}
+          ?disabled=${this._busy}
+          @input=${(e: Event) => {
+            this._importPayload = (e.target as HTMLTextAreaElement).value;
+            this._syncSource = 'import';
+            this._preview = null;
+            this._syncResult = null;
+            this._error = '';
+            this._success = '';
+          }}
+        ></textarea>
+        ${hasPayload ? html`
+          <uui-button
+            look="secondary"
+            label="Preview what this payload would change"
+            .state=${this._busy ? 'loading' : undefined}
+            ?disabled=${this._busy}
+            @click=${this._runPreview}>
+            Preview import
+          </uui-button>
+        ` : nothing}
+      </div>
     `;
   }
 
@@ -437,10 +544,15 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
           </div>
         </div>
 
-        <!-- Conflict list -->
+        <!-- Conflict list / no-conflict message -->
         ${p.hasConflicts
           ? this._renderConflicts(p.conflicts)
-          : html`<p class="no-conflict">✓ No conflicts detected — safe to sync.</p>`
+          : p.totalChanges === 0
+            ? html`<p class="no-changes-notice">
+                No changes detected — the snapshot content matches this environment exactly.
+                You can still click Sync to confirm the restore, but nothing will be modified.
+              </p>`
+            : html`<p class="no-conflict">✓ No conflicts detected — safe to sync.</p>`
         }
 
         <!-- Diff detail (collapsible to keep the page uncluttered) -->
@@ -449,7 +561,8 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
         <!-- Action buttons -->
         <div class="actions">
           <uui-button
-            look="positive"
+            look="primary"
+            color="positive"
             label="Apply this snapshot to the current environment"
             .state=${this._busy ? 'loading' : undefined}
             ?disabled=${this._busy || p.hasConflicts}
@@ -462,7 +575,8 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
             <div class="force-sync-wrap">
               <span class="force-sync-label">Danger zone</span>
               <uui-button
-                look="danger"
+                look="primary"
+                color="danger"
                 label="Force sync — override all conflicts and apply"
                 .state=${this._busy ? 'loading' : undefined}
                 ?disabled=${this._busy}
@@ -590,11 +704,15 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
   private async _exportAndRefresh(): Promise<void> {
     this._startRequest();
     try {
-      const res = await this._fetch('/api/contentsync/export');
+      const env = encodeURIComponent(this._environment);
+      const res = await this._fetch(`/api/contentsync/export?env=${env}`);
       if (!res.ok) throw new Error(`Export failed: HTTP ${res.status}`);
-      const data = await res.json() as { count: number };
-      this._success = `Exported ${data.count} items — snapshot saved.`;
+      const data = await res.json() as { count: number; snapshotId: string; payload: string };
+      this._lastExportedPayload = data.payload ?? '';
+      this._success = `Exported ${data.count} items — snapshot saved. Copy the payload below to import it on another environment.`;
       await this._fetchSnapshots();
+      // Auto-select the snapshot that was just created
+      if (data.snapshotId) this._selectedId = data.snapshotId;
     } catch (err) {
       this._setError(`Export failed: ${errorMessage(err)}`);
     } finally {
@@ -625,6 +743,7 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
 
   private _onSnapshotChange(e: Event): void {
     this._selectedId = (e.target as HTMLSelectElement).value;
+    this._syncSource = 'snapshot';
     this._preview = null;
     this._syncResult = null;
     this._error = '';
@@ -632,22 +751,30 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
   }
 
   private async _runPreview(): Promise<void> {
-    if (!this._selectedId) return;
+    const isSnapshot = this._syncSource === 'snapshot';
+    if (isSnapshot && !this._selectedId) return;
+    if (!isSnapshot && !this._importPayload.trim()) return;
+
     this._startRequest();
     this._preview = null;
     this._syncResult = null;
 
     try {
-      // Step 1 — fetch the full snapshot (includes the data payload)
-      const snapshotRes = await this._fetch(`/api/contentsync/snapshot/${this._selectedId}`);
-      if (!snapshotRes.ok) throw new Error(`Could not load snapshot: HTTP ${snapshotRes.status}`);
-      const snapshot = await snapshotRes.json() as SyncSnapshot;
+      let payload: string;
 
-      // Step 2 — run the preview against the current environment
+      if (isSnapshot) {
+        const snapshotRes = await this._fetch(`/api/contentsync/snapshot/${this._selectedId}`);
+        if (!snapshotRes.ok) throw new Error(`Could not load snapshot: HTTP ${snapshotRes.status}`);
+        const snapshot = await snapshotRes.json() as SyncSnapshot;
+        payload = snapshot.data;
+      } else {
+        payload = this._importPayload.trim();
+      }
+
       const previewRes = await this._fetch('/api/contentsync/preview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payload: snapshot.data }),
+        body: JSON.stringify({ payload }),
       });
 
       if (previewRes.status === 400) {
@@ -665,15 +792,22 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
   }
 
   private async _runSync(force: boolean): Promise<void> {
-    if (!this._selectedId) return;
+    const isSnapshot = this._syncSource === 'snapshot';
+    if (isSnapshot && !this._selectedId) return;
+    if (!isSnapshot && !this._importPayload.trim()) return;
+
     this._startRequest();
     this._syncResult = null;
 
     try {
       const qs = force ? '?force=true' : '';
-      const res = await this._fetch(`/api/contentsync/restore/${this._selectedId}${qs}`, {
-        method: 'POST',
-      });
+      const res = isSnapshot
+        ? await this._fetch(`/api/contentsync/restore/${this._selectedId}${qs}`, { method: 'POST' })
+        : await this._fetch(`/api/contentsync/sync${qs}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ payload: this._importPayload.trim() }),
+          });
 
       // 409 — conflicts found without force; update the preview so the UI
       // refreshes the conflict list (edge case: env changed between preview & sync)
@@ -697,6 +831,16 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
       this._setError(errorMessage(err));
     } finally {
       this._busy = false;
+    }
+  }
+
+  private async _copyPayload(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(this._lastExportedPayload);
+      this._success = 'Payload copied to clipboard. Paste it on your target environment.';
+    } catch {
+      this._setError('Clipboard write failed — please copy the payload manually from the browser console.');
+      console.info('[ContentSync] exported payload:', this._lastExportedPayload);
     }
   }
 

@@ -10,4 +10,7 @@ public sealed class SyncExportResult
 
     /// <summary>Self-contained JSON payload ready to be pushed to a target environment.</summary>
     public string Payload { get; init; } = string.Empty;
+
+    /// <summary>ID of the snapshot automatically created during this export.</summary>
+    public Guid SnapshotId { get; init; }
 }
