@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Umbraco.Cms.Web.Common.Authorization;
 using Umbraco.ContentSync.API.DTOs;
 using Umbraco.ContentSync.Core.Interfaces;
 using Umbraco.ContentSync.Core.Models;
@@ -36,6 +38,7 @@ namespace Umbraco.ContentSync.API.Controllers;
 [ApiController]
 [Route("api/contentsync")]
 [Produces("application/json")]
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 public sealed class SyncController : ControllerBase
 {
     private readonly IDiffService _diffService;
@@ -83,6 +86,7 @@ public sealed class SyncController : ControllerBase
     /// for a non-critical diagnostic endpoint.
     /// </summary>
     [HttpGet("health")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Health()
     {

@@ -24,11 +24,17 @@
       "Bash(sed -i 's|<TargetFramework>net10.0</TargetFramework>|<TargetFrameworks>net8.0;net10.0</TargetFrameworks>|' /tmp/mttest/Umbraco.ContentSync.csproj)",
       "Bash(dotnet restore *)",
       "Bash(dotnet list *)",
-      "Read(//c/Users/jebas/.claude/projects/c--GitHub-Umbraco-Umbraco-ContentSync/memory/**)"
+      "Read(//c/Users/jebas/.claude/projects/c--GitHub-Umbraco-Umbraco-ContentSync/memory/**)",
+      "Bash(cp ContentSync.Umbraco.0.1.9.nupkg ContentSync.Umbraco.0.1.9.zip)",
+      "Bash(unzip -l ContentSync.Umbraco.0.1.9.zip)",
+      "Bash(cp ContentSync.Umbraco.0.1.9.nupkg /tmp/cs.zip)",
+      "Bash(unzip -p /tmp/cs.zip \"build/Microsoft.AspNetCore.StaticWebAssets.props\")",
+      "Bash(rm /tmp/cs.zip)"
     ],
     "additionalDirectories": [
       "c:\\GitHub\\Umbraco\\Umbraco.ContentSync.Demo\\wwwroot\\App_Plugins\\Umbraco.ContentSync",
-      "\\tmp"
+      "\\tmp",
+      "C:\\GitHub\\Umbraco\\Umbraco.ContentSync"
     ]
   }
 }

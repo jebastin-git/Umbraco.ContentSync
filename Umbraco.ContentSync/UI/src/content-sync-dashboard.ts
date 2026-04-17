@@ -239,6 +239,29 @@ export class ContentSyncDashboard extends LitElement {
     }
     .no-conflict { color: var(--uui-color-positive-standalone, #1c8140); font-size: 0.875rem; }
 
+    /* ── Environment input ─────────────────────────────────────────── */
+    .env-row {
+      display: flex;
+      align-items: center;
+      gap: var(--uui-size-space-3, 8px);
+      margin-bottom: var(--uui-size-space-4, 12px);
+    }
+    .env-row label {
+      font-weight: 600;
+      font-size: 0.8125rem;
+      color: var(--uui-color-text-alt, #555);
+      white-space: nowrap;
+    }
+    .env-row input {
+      padding: 5px 10px;
+      width: 160px;
+      border: 1px solid var(--uui-color-border, #c4c4c4);
+      border-radius: var(--uui-border-radius, 3px);
+      background: var(--uui-color-surface, #fff);
+      color: var(--uui-color-text, #1a1a1a);
+      font-size: inherit;
+    }
+
     /* ── Utility ───────────────────────────────────────────────────── */
     uui-button + uui-button, uui-button + select { margin-left: 0; }
     .actions { display: flex; gap: var(--uui-size-space-3, 8px); margin-top: var(--uui-size-space-4, 12px); align-items: center; flex-wrap: wrap; }
@@ -253,6 +276,12 @@ export class ContentSyncDashboard extends LitElement {
   @state() private _busy = false;
   @state() private _error = '';
   @state() private _success = '';
+  @state() private _environment = 'Dev';
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this._loadSnapshots();
+  }
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -285,16 +314,38 @@ export class ContentSyncDashboard extends LitElement {
   private _renderSnapshotSection(): TemplateResult {
     return html`
       <section aria-label="Snapshot selector">
-        <h2>Select Snapshot</h2>
+        <h2>Snapshots</h2>
 
+        <!-- Environment label -->
+        <div class="env-row">
+          <label for="env-input">Environment</label>
+          <input
+            id="env-input"
+            type="text"
+            .value=${this._environment}
+            ?disabled=${this._busy}
+            @input=${(e: Event) => { this._environment = (e.target as HTMLInputElement).value.trim() || 'Dev'; }}
+            placeholder="e.g. Dev, Staging, Production" />
+        </div>
+
+        <!-- Toolbar: Export + Refresh + snapshot picker -->
         <div class="toolbar">
           <uui-button
+            look="primary"
+            label="Export current content and create a snapshot"
+            .state=${this._busy ? 'loading' : undefined}
+            ?disabled=${this._busy}
+            @click=${this._exportAndRefresh}>
+            Export &amp; Snapshot
+          </uui-button>
+
+          <uui-button
             look="secondary"
-            label="Load snapshots from the current environment"
+            label="Reload snapshot list"
             .state=${this._busy ? 'loading' : undefined}
             ?disabled=${this._busy}
             @click=${this._loadSnapshots}>
-            Load Snapshots
+            Refresh
           </uui-button>
 
           ${this._snapshots.length > 0 ? html`
@@ -325,9 +376,7 @@ export class ContentSyncDashboard extends LitElement {
             ` : nothing}
 
           ` : html`
-            <span class="empty-hint">
-              Click "Load Snapshots" to populate the list.
-            </span>
+            <span class="empty-hint">No snapshots yet — click "Export &amp; Snapshot" to create one.</span>
           `}
         </div>
       </section>
@@ -492,21 +541,40 @@ export class ContentSyncDashboard extends LitElement {
 
   // ── API helpers ───────────────────────────────────────────────────────────
 
+  private async _exportAndRefresh(): Promise<void> {
+    this._startRequest();
+    try {
+      const res = await fetch('/api/contentsync/export');
+      if (!res.ok) throw new Error(`Export failed: HTTP ${res.status}`);
+      const data = await res.json() as { count: number };
+      this._success = `Exported ${data.count} items — snapshot saved.`;
+      await this._fetchSnapshots();
+    } catch (err) {
+      this._setError(`Export failed: ${errorMessage(err)}`);
+    } finally {
+      this._busy = false;
+    }
+  }
+
   private async _loadSnapshots(): Promise<void> {
     this._startRequest();
     try {
-      const res = await fetch('/api/contentsync/snapshots?env=Dev');
-      if (!res.ok) throw new Error(`Server returned HTTP ${res.status}`);
-
-      this._snapshots = await res.json() as SnapshotDto[];
-      this._selectedId = '';
-      this._preview = null;
-      this._syncResult = null;
+      await this._fetchSnapshots();
     } catch (err) {
       this._setError(`Failed to load snapshots: ${errorMessage(err)}`);
     } finally {
       this._busy = false;
     }
+  }
+
+  private async _fetchSnapshots(): Promise<void> {
+    const env = encodeURIComponent(this._environment);
+    const res = await fetch(`/api/contentsync/snapshots?env=${env}`);
+    if (!res.ok) throw new Error(`Server returned HTTP ${res.status}`);
+    this._snapshots = await res.json() as SnapshotDto[];
+    this._selectedId = '';
+    this._preview = null;
+    this._syncResult = null;
   }
 
   private _onSnapshotChange(e: Event): void {

@@ -76,11 +76,7 @@ public sealed class SyncValidator : ISyncValidator
         foreach (var item in items.Where(x => string.IsNullOrWhiteSpace(x.Name)))
             errors.Add($"Item with ID '{item.Id}' has no name.");
 
-        // 6. Warning — items with no properties may indicate a mapping gap
-        foreach (var item in items.Where(x => x.Properties.Count == 0))
-            warnings.Add($"Item '{item.Name}' ({item.Id}) has no properties — it may not have been mapped correctly.");
-
-        // 7. Warning — unrecognised SyncItemType values
+        // 6. Warning — unrecognised SyncItemType values (genuine data integrity issue)
         foreach (var item in items.Where(x => !Enum.IsDefined(x.Type)))
             warnings.Add($"Item '{item.Name}' has an unrecognised type value '{(int)item.Type}'.");
 
