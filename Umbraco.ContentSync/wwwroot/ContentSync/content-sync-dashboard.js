@@ -29,7 +29,7 @@ const pt = (s) => new lt(typeof s == "string" ? s : s + "", void 0, J), ft = (s,
     throw Error("Value passed to 'css' function must be a 'css' function result: " + o + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
   })(r) + s[n + 1], s[0]);
   return new lt(e, s, J);
-}, $t = (s, t) => {
+}, _t = (s, t) => {
   if (F) s.adoptedStyleSheets = t.map((e) => e instanceof CSSStyleSheet ? e : e.styleSheet);
   else for (const e of t) {
     const i = document.createElement("style"), r = D.litNonce;
@@ -45,7 +45,7 @@ const pt = (s) => new lt(typeof s == "string" ? s : s + "", void 0, J), ft = (s,
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { is: _t, defineProperty: vt, getOwnPropertyDescriptor: yt, getOwnPropertyNames: mt, getOwnPropertySymbols: gt, getPrototypeOf: bt } = Object, m = globalThis, G = m.trustedTypes, wt = G ? G.emptyScript : "", q = m.reactiveElementPolyfillSupport, R = (s, t) => s, I = { toAttribute(s, t) {
+const { is: $t, defineProperty: vt, getOwnPropertyDescriptor: yt, getOwnPropertyNames: mt, getOwnPropertySymbols: gt, getPrototypeOf: bt } = Object, m = globalThis, G = m.trustedTypes, wt = G ? G.emptyScript : "", q = m.reactiveElementPolyfillSupport, R = (s, t) => s, I = { toAttribute(s, t) {
   switch (t) {
     case Boolean:
       s = s ? wt : null;
@@ -73,7 +73,7 @@ const { is: _t, defineProperty: vt, getOwnPropertyDescriptor: yt, getOwnProperty
       }
   }
   return e;
-} }, X = (s, t) => !_t(s, t), Q = { attribute: !0, type: String, converter: I, reflect: !1, useDefault: !1, hasChanged: X };
+} }, X = (s, t) => !$t(s, t), Q = { attribute: !0, type: String, converter: I, reflect: !1, useDefault: !1, hasChanged: X };
 Symbol.metadata ?? (Symbol.metadata = Symbol("metadata")), m.litPropertyMetadata ?? (m.litPropertyMetadata = /* @__PURE__ */ new WeakMap());
 let S = class extends HTMLElement {
   static addInitializer(t) {
@@ -159,7 +159,7 @@ let S = class extends HTMLElement {
   }
   createRenderRoot() {
     const t = this.shadowRoot ?? this.attachShadow(this.constructor.shadowRootOptions);
-    return $t(t, this.constructor.elementStyles), t;
+    return _t(t, this.constructor.elementStyles), t;
   }
   connectedCallback() {
     var t;
@@ -296,8 +296,8 @@ const Et = (s, t) => {
   let r, n = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = P;
   for (let l = 0; l < e; l++) {
     const a = s[l];
-    let u, p, h = -1, $ = 0;
-    for (; $ < a.length && (o.lastIndex = $, p = o.exec(a), p !== null); ) $ = o.lastIndex, o === P ? p[1] === "!--" ? o = st : p[1] !== void 0 ? o = it : p[2] !== void 0 ? (dt.test(p[2]) && (r = RegExp("</" + p[2], "g")), o = b) : p[3] !== void 0 && (o = b) : o === b ? p[0] === ">" ? (o = r ?? P, h = -1) : p[1] === void 0 ? h = -2 : (h = o.lastIndex - p[2].length, u = p[1], o = p[3] === void 0 ? b : p[3] === '"' ? ot : rt) : o === ot || o === rt ? o = b : o === st || o === it ? o = P : (o = b, r = void 0);
+    let u, p, h = -1, _ = 0;
+    for (; _ < a.length && (o.lastIndex = _, p = o.exec(a), p !== null); ) _ = o.lastIndex, o === P ? p[1] === "!--" ? o = st : p[1] !== void 0 ? o = it : p[2] !== void 0 ? (dt.test(p[2]) && (r = RegExp("</" + p[2], "g")), o = b) : p[3] !== void 0 && (o = b) : o === b ? p[0] === ">" ? (o = r ?? P, h = -1) : p[1] === void 0 ? h = -2 : (h = o.lastIndex - p[2].length, u = p[1], o = p[3] === void 0 ? b : p[3] === '"' ? ot : rt) : o === ot || o === rt ? o = b : o === st || o === it ? o = P : (o = b, r = void 0);
     const v = o === b && s[l + 1].startsWith("/>") ? " " : "";
     n += o === P ? a + At : h >= 0 ? (i.push(u), a.slice(0, h) + ct + a.slice(h) + y + v) : a + y + (h === -2 ? l : v);
   }
@@ -316,15 +316,15 @@ class k {
     for (; (r = w.nextNode()) !== null && a.length < l; ) {
       if (r.nodeType === 1) {
         if (r.hasAttributes()) for (const h of r.getAttributeNames()) if (h.endsWith(ct)) {
-          const $ = p[o++], v = r.getAttribute(h).split(y), H = /([.?@])?(.*)/.exec($);
+          const _ = p[o++], v = r.getAttribute(h).split(y), H = /([.?@])?(.*)/.exec(_);
           a.push({ type: 1, index: n, name: H[2], strings: v, ctor: H[1] === "." ? Pt : H[1] === "?" ? Rt : H[1] === "@" ? Tt : L }), r.removeAttribute(h);
         } else h.startsWith(y) && (a.push({ type: 6, index: n }), r.removeAttribute(h));
         if (dt.test(r.tagName)) {
-          const h = r.textContent.split(y), $ = h.length - 1;
-          if ($ > 0) {
+          const h = r.textContent.split(y), _ = h.length - 1;
+          if (_ > 0) {
             r.textContent = j ? j.emptyScript : "";
-            for (let v = 0; v < $; v++) r.append(h[v], O()), w.nextNode(), a.push({ type: 2, index: ++n });
-            r.append(h[$], O());
+            for (let v = 0; v < _; v++) r.append(h[v], O()), w.nextNode(), a.push({ type: 2, index: ++n });
+            r.append(h[_], O());
           }
         }
       } else if (r.nodeType === 8) if (r.data === ht) a.push({ type: 2, index: n });
@@ -601,7 +601,7 @@ function Ht(s) {
 function g(s) {
   return Ht({ ...s, state: !0, attribute: !1 });
 }
-var Nt = Object.defineProperty, Dt = Object.getOwnPropertyDescriptor, _ = (s, t, e, i) => {
+var Nt = Object.defineProperty, Dt = Object.getOwnPropertyDescriptor, $ = (s, t, e, i) => {
   for (var r = i > 1 ? void 0 : i ? Dt(t, e) : t, n = s.length - 1, o; n >= 0; n--)
     (o = s[n]) && (r = (i ? o(t, e, r) : o(r)) || r);
   return i && r && Nt(t, e, r), r;
@@ -851,10 +851,15 @@ let f = class extends z {
     `;
   }
   // ── API helpers ───────────────────────────────────────────────────────────
+  // Wraps fetch with credentials: 'include' so the backoffice session cookie
+  // is sent on every request, satisfying the BackOfficeAccess auth policy.
+  _fetch(s, t = {}) {
+    return fetch(s, { ...t, credentials: "include" });
+  }
   async _exportAndRefresh() {
     this._startRequest();
     try {
-      const s = await fetch("/api/contentsync/export");
+      const s = await this._fetch("/api/contentsync/export");
       if (!s.ok) throw new Error(`Export failed: HTTP ${s.status}`);
       const t = await s.json();
       this._success = `Exported ${t.count} items — snapshot saved.`, await this._fetchSnapshots();
@@ -875,7 +880,7 @@ let f = class extends z {
     }
   }
   async _fetchSnapshots() {
-    const s = encodeURIComponent(this._environment), t = await fetch(`/api/contentsync/snapshots?env=${s}`);
+    const s = encodeURIComponent(this._environment), t = await this._fetch(`/api/contentsync/snapshots?env=${s}`);
     if (!t.ok) throw new Error(`Server returned HTTP ${t.status}`);
     this._snapshots = await t.json(), this._selectedId = "", this._preview = null, this._syncResult = null;
   }
@@ -886,9 +891,9 @@ let f = class extends z {
     if (this._selectedId) {
       this._startRequest(), this._preview = null, this._syncResult = null;
       try {
-        const s = await fetch(`/api/contentsync/snapshot/${this._selectedId}`);
+        const s = await this._fetch(`/api/contentsync/snapshot/${this._selectedId}`);
         if (!s.ok) throw new Error(`Could not load snapshot: HTTP ${s.status}`);
-        const t = await s.json(), e = await fetch("/api/contentsync/preview", {
+        const t = await s.json(), e = await this._fetch("/api/contentsync/preview", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ payload: t.data })
@@ -910,7 +915,7 @@ let f = class extends z {
     if (this._selectedId) {
       this._startRequest(), this._syncResult = null;
       try {
-        const t = s ? "?force=true" : "", e = await fetch(`/api/contentsync/restore/${this._selectedId}${t}`, {
+        const t = s ? "?force=true" : "", e = await this._fetch(`/api/contentsync/restore/${this._selectedId}${t}`, {
           method: "POST"
         });
         if (e.status === 409) {
@@ -1136,31 +1141,31 @@ f.styles = ft`
     uui-button + uui-button, uui-button + select { margin-left: 0; }
     .actions { display: flex; gap: var(--uui-size-space-3, 8px); margin-top: var(--uui-size-space-4, 12px); align-items: center; flex-wrap: wrap; }
   `;
-_([
+$([
   g()
 ], f.prototype, "_snapshots", 2);
-_([
+$([
   g()
 ], f.prototype, "_selectedId", 2);
-_([
+$([
   g()
 ], f.prototype, "_preview", 2);
-_([
+$([
   g()
 ], f.prototype, "_syncResult", 2);
-_([
+$([
   g()
 ], f.prototype, "_busy", 2);
-_([
+$([
   g()
 ], f.prototype, "_error", 2);
-_([
+$([
   g()
 ], f.prototype, "_success", 2);
-_([
+$([
   g()
 ], f.prototype, "_environment", 2);
-f = _([
+f = $([
   Ut("content-sync-dashboard")
 ], f);
 function N(s) {

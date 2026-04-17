@@ -541,10 +541,16 @@ export class ContentSyncDashboard extends LitElement {
 
   // ── API helpers ───────────────────────────────────────────────────────────
 
+  // Wraps fetch with credentials: 'include' so the backoffice session cookie
+  // is sent on every request, satisfying the BackOfficeAccess auth policy.
+  private _fetch(url: string, init: RequestInit = {}): Promise<Response> {
+    return fetch(url, { ...init, credentials: 'include' });
+  }
+
   private async _exportAndRefresh(): Promise<void> {
     this._startRequest();
     try {
-      const res = await fetch('/api/contentsync/export');
+      const res = await this._fetch('/api/contentsync/export');
       if (!res.ok) throw new Error(`Export failed: HTTP ${res.status}`);
       const data = await res.json() as { count: number };
       this._success = `Exported ${data.count} items — snapshot saved.`;
@@ -569,7 +575,7 @@ export class ContentSyncDashboard extends LitElement {
 
   private async _fetchSnapshots(): Promise<void> {
     const env = encodeURIComponent(this._environment);
-    const res = await fetch(`/api/contentsync/snapshots?env=${env}`);
+    const res = await this._fetch(`/api/contentsync/snapshots?env=${env}`);
     if (!res.ok) throw new Error(`Server returned HTTP ${res.status}`);
     this._snapshots = await res.json() as SnapshotDto[];
     this._selectedId = '';
@@ -593,12 +599,12 @@ export class ContentSyncDashboard extends LitElement {
 
     try {
       // Step 1 — fetch the full snapshot (includes the data payload)
-      const snapshotRes = await fetch(`/api/contentsync/snapshot/${this._selectedId}`);
+      const snapshotRes = await this._fetch(`/api/contentsync/snapshot/${this._selectedId}`);
       if (!snapshotRes.ok) throw new Error(`Could not load snapshot: HTTP ${snapshotRes.status}`);
       const snapshot = await snapshotRes.json() as SyncSnapshot;
 
       // Step 2 — run the preview against the current environment
-      const previewRes = await fetch('/api/contentsync/preview', {
+      const previewRes = await this._fetch('/api/contentsync/preview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ payload: snapshot.data }),
@@ -625,7 +631,7 @@ export class ContentSyncDashboard extends LitElement {
 
     try {
       const qs = force ? '?force=true' : '';
-      const res = await fetch(`/api/contentsync/restore/${this._selectedId}${qs}`, {
+      const res = await this._fetch(`/api/contentsync/restore/${this._selectedId}${qs}`, {
         method: 'POST',
       });
 
