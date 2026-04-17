@@ -113,6 +113,7 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
       cursor: pointer;
     }
     select:disabled { opacity: 0.5; cursor: not-allowed; }
+    select:focus-visible { outline: 2px solid var(--uui-color-focus, #3544b1); outline-offset: 1px; }
 
     /* ── Summary counts ────────────────────────────────────────────── */
     .summary-bar {
@@ -165,8 +166,8 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
       border-radius: 3px;
       font-size: 0.7rem;
       font-weight: 600;
-      background: var(--uui-color-warning-standalone, #fff3cd);
-      color: var(--uui-color-warning-contrast, #7a4f00);
+      background: #fff3cd;
+      color: #7a4f00;
       white-space: nowrap;
     }
     .conflict-type.ModifiedInBoth  { background: #fff3cd; color: #7a4f00; }
@@ -222,18 +223,11 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
       padding: 8px 12px;
       border-radius: var(--uui-border-radius, 3px);
       font-size: 0.875rem;
-      border: 1px solid transparent;
+      border: none;
+      color: #fff;
     }
-    .message.error   {
-      background: var(--uui-color-danger-standalone, #f8d7da);
-      border-color: var(--uui-color-danger, #c82333);
-      color: #7d1a24;
-    }
-    .message.success {
-      background: var(--uui-color-positive-standalone, #d4edda);
-      border-color: var(--uui-color-positive, #28a745);
-      color: #155724;
-    }
+    .message.error   { background: var(--uui-color-danger-standalone, #b01c2e); }
+    .message.success { background: var(--uui-color-positive-standalone, #1c8140); }
     .empty-hint {
       color: var(--uui-color-text-alt, #888);
       font-style: italic;
@@ -263,10 +257,37 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
       color: var(--uui-color-text, #1a1a1a);
       font-size: inherit;
     }
+    .env-row input:focus-visible { outline: 2px solid var(--uui-color-focus, #3544b1); outline-offset: 1px; }
+
+    /* ── Sync actions ──────────────────────────────────────────────── */
+    .actions {
+      display: flex;
+      gap: var(--uui-size-space-3, 8px);
+      margin-top: var(--uui-size-space-4, 12px);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .sync-hint {
+      font-size: 0.8125rem;
+      color: var(--uui-color-text-alt, #777);
+      font-style: italic;
+    }
+    .force-sync-wrap {
+      display: flex;
+      align-items: center;
+      gap: var(--uui-size-space-3, 8px);
+      padding-left: var(--uui-size-space-4, 12px);
+      border-left: 2px solid var(--uui-color-danger-standalone, #b01c2e);
+      margin-left: var(--uui-size-space-3, 8px);
+    }
+    .force-sync-label {
+      font-size: 0.75rem;
+      color: var(--uui-color-danger-standalone, #b01c2e);
+      font-weight: 600;
+    }
 
     /* ── Utility ───────────────────────────────────────────────────── */
     uui-button + uui-button, uui-button + select { margin-left: 0; }
-    .actions { display: flex; gap: var(--uui-size-space-3, 8px); margin-top: var(--uui-size-space-4, 12px); align-items: center; flex-wrap: wrap; }
   `;
 
   // ── Reactive state ────────────────────────────────────────────────────────
@@ -437,14 +458,18 @@ export class ContentSyncDashboard extends UmbElementMixin(LitElement) {
           </uui-button>
 
           ${p.hasConflicts ? html`
-            <uui-button
-              look="danger"
-              label="Force sync — apply despite detected conflicts"
-              .state=${this._busy ? 'loading' : undefined}
-              ?disabled=${this._busy}
-              @click=${() => this._runSync(true)}>
-              Force Sync
-            </uui-button>
+            <span class="sync-hint">Resolve conflicts to sync, or —</span>
+            <div class="force-sync-wrap">
+              <span class="force-sync-label">Danger zone</span>
+              <uui-button
+                look="danger"
+                label="Force sync — override all conflicts and apply"
+                .state=${this._busy ? 'loading' : undefined}
+                ?disabled=${this._busy}
+                @click=${() => this._runSync(true)}>
+                Force Sync
+              </uui-button>
+            </div>
           ` : nothing}
         </div>
       </section>

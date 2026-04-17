@@ -47,7 +47,7 @@ const yt = (s) => new ct(typeof s == "string" ? s : s + "", void 0, J), mt = (s,
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { is: bt, defineProperty: wt, getOwnPropertyDescriptor: At, getOwnPropertyNames: xt, getOwnPropertySymbols: St, getPrototypeOf: Et } = Object, m = globalThis, Q = m.trustedTypes, Ct = Q ? Q.emptyScript : "", q = m.reactiveElementPolyfillSupport, R = (s, t) => s, j = { toAttribute(s, t) {
+const { is: bt, defineProperty: wt, getOwnPropertyDescriptor: xt, getOwnPropertyNames: At, getOwnPropertySymbols: St, getPrototypeOf: Et } = Object, m = globalThis, Q = m.trustedTypes, Ct = Q ? Q.emptyScript : "", q = m.reactiveElementPolyfillSupport, R = (s, t) => s, j = { toAttribute(s, t) {
   switch (t) {
     case Boolean:
       s = s ? Ct : null;
@@ -91,7 +91,7 @@ let S = class extends HTMLElement {
     }
   }
   static getPropertyDescriptor(t, e, i) {
-    const { get: r, set: n } = At(this.prototype, t) ?? { get() {
+    const { get: r, set: n } = xt(this.prototype, t) ?? { get() {
       return this[e];
     }, set(o) {
       this[e] = o;
@@ -112,7 +112,7 @@ let S = class extends HTMLElement {
   static finalize() {
     if (this.hasOwnProperty(R("finalized"))) return;
     if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(R("properties"))) {
-      const e = this.properties, i = [...xt(e), ...St(e)];
+      const e = this.properties, i = [...At(e), ...St(e)];
       for (const r of i) this.createProperty(r, e[r]);
     }
     const t = this[Symbol.metadata];
@@ -286,14 +286,14 @@ S.elementStyles = [], S.shadowRootOptions = { mode: "open" }, S[R("elementProper
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const T = globalThis, et = (s) => s, L = T.trustedTypes, st = L ? L.createPolicy("lit-html", { createHTML: (s) => s }) : void 0, ht = "$lit$", y = `lit$${Math.random().toFixed(9).slice(2)}$`, dt = "?" + y, Pt = `<${dt}>`, x = document, k = () => x.createComment(""), O = (s) => s === null || typeof s != "object" && typeof s != "function", K = Array.isArray, Rt = (s) => K(s) || typeof (s == null ? void 0 : s[Symbol.iterator]) == "function", W = `[ 	
+const z = globalThis, et = (s) => s, L = z.trustedTypes, st = L ? L.createPolicy("lit-html", { createHTML: (s) => s }) : void 0, ht = "$lit$", y = `lit$${Math.random().toFixed(9).slice(2)}$`, dt = "?" + y, Pt = `<${dt}>`, A = document, k = () => A.createComment(""), O = (s) => s === null || typeof s != "object" && typeof s != "function", K = Array.isArray, Rt = (s) => K(s) || typeof (s == null ? void 0 : s[Symbol.iterator]) == "function", W = `[ 	
 \f\r]`, P = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, it = /-->/g, rt = />/g, b = RegExp(`>|${W}(?:([^\\s"'>=/]+)(${W}*=${W}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), ot = /'/g, nt = /"/g, ut = /^(?:script|style|textarea|title)$/i, Tt = (s) => (t, ...e) => ({ _$litType$: s, strings: t, values: e }), d = Tt(1), E = Symbol.for("lit-noChange"), c = Symbol.for("lit-nothing"), at = /* @__PURE__ */ new WeakMap(), w = x.createTreeWalker(x, 129);
+\f\r"'\`<>=]|("|')|))|$)`, "g"), ot = /'/g, nt = /"/g, ut = /^(?:script|style|textarea|title)$/i, zt = (s) => (t, ...e) => ({ _$litType$: s, strings: t, values: e }), d = zt(1), E = Symbol.for("lit-noChange"), c = Symbol.for("lit-nothing"), at = /* @__PURE__ */ new WeakMap(), w = A.createTreeWalker(A, 129);
 function pt(s, t) {
   if (!K(s) || !s.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return st !== void 0 ? st.createHTML(t) : t;
 }
-const zt = (s, t) => {
+const Tt = (s, t) => {
   const e = s.length - 1, i = [];
   let r, n = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = P;
   for (let l = 0; l < e; l++) {
@@ -310,7 +310,7 @@ class U {
     let r;
     this.parts = [];
     let n = 0, o = 0;
-    const l = t.length - 1, a = this.parts, [u, p] = zt(t, e);
+    const l = t.length - 1, a = this.parts, [u, p] = Tt(t, e);
     if (this.el = U.createElement(u, i), w.currentNode = this.el.content, e === 2 || e === 3) {
       const h = this.el.content.firstChild;
       h.replaceWith(...h.childNodes);
@@ -338,7 +338,7 @@ class U {
     }
   }
   static createElement(t, e) {
-    const i = x.createElement("template");
+    const i = A.createElement("template");
     return i.innerHTML = t, i;
   }
 }
@@ -360,7 +360,7 @@ class kt {
     return this._$AM._$AU;
   }
   u(t) {
-    const { el: { content: e }, parts: i } = this._$AD, r = ((t == null ? void 0 : t.creationScope) ?? x).importNode(e, !0);
+    const { el: { content: e }, parts: i } = this._$AD, r = ((t == null ? void 0 : t.creationScope) ?? A).importNode(e, !0);
     w.currentNode = r;
     let n = w.nextNode(), o = 0, l = 0, a = i[0];
     for (; a !== void 0; ) {
@@ -370,7 +370,7 @@ class kt {
       }
       o !== (a == null ? void 0 : a.index) && (n = w.nextNode(), o++);
     }
-    return w.currentNode = x, r;
+    return w.currentNode = A, r;
   }
   p(t) {
     let e = 0;
@@ -406,7 +406,7 @@ class M {
     this._$AH !== t && (this._$AR(), this._$AH = this.O(t));
   }
   _(t) {
-    this._$AH !== c && O(this._$AH) ? this._$AA.nextSibling.data = t : this.T(x.createTextNode(t)), this._$AH = t;
+    this._$AH !== c && O(this._$AH) ? this._$AA.nextSibling.data = t : this.T(A.createTextNode(t)), this._$AH = t;
   }
   $(t) {
     var n;
@@ -506,8 +506,8 @@ class Ht {
     C(this, t);
   }
 }
-const V = T.litHtmlPolyfillSupport;
-V == null || V(U, M), (T.litHtmlVersions ?? (T.litHtmlVersions = [])).push("3.3.2");
+const V = z.litHtmlPolyfillSupport;
+V == null || V(U, M), (z.litHtmlVersions ?? (z.litHtmlVersions = [])).push("3.3.2");
 const Nt = (s, t, e) => {
   const i = (e == null ? void 0 : e.renderBefore) ?? t;
   let r = i._$litPart$;
@@ -522,8 +522,8 @@ const Nt = (s, t, e) => {
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const A = globalThis;
-class z extends S {
+const x = globalThis;
+class T extends S {
   constructor() {
     super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
   }
@@ -549,10 +549,10 @@ class z extends S {
   }
 }
 var lt;
-z._$litElement$ = !0, z.finalized = !0, (lt = A.litElementHydrateSupport) == null || lt.call(A, { LitElement: z });
-const F = A.litElementPolyfillSupport;
-F == null || F({ LitElement: z });
-(A.litElementVersions ?? (A.litElementVersions = [])).push("4.2.2");
+T._$litElement$ = !0, T.finalized = !0, (lt = x.litElementHydrateSupport) == null || lt.call(x, { LitElement: T });
+const F = x.litElementPolyfillSupport;
+F == null || F({ LitElement: T });
+(x.litElementVersions ?? (x.litElementVersions = [])).push("4.2.2");
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -610,7 +610,7 @@ var Bt = Object.defineProperty, qt = Object.getOwnPropertyDescriptor, ft = (s) =
     (o = s[n]) && (r = (i ? o(t, e, r) : o(r)) || r);
   return i && r && Bt(t, e, r), r;
 }, _t = (s, t, e) => t.has(s) || ft("Cannot " + e), Wt = (s, t, e) => (_t(s, t, "read from private field"), e ? e.call(s) : t.get(s)), Vt = (s, t, e) => t.has(s) ? ft("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(s) : t.set(s, e), Ft = (s, t, e, i) => (_t(s, t, "write to private field"), t.set(s, e), e), I;
-let f = class extends $t(z) {
+let f = class extends $t(T) {
   constructor() {
     super(...arguments), this._snapshots = [], this._selectedId = "", this._preview = null, this._syncResult = null, this._busy = !1, this._error = "", this._success = "", this._environment = "Dev", Vt(this, I);
   }
@@ -753,14 +753,18 @@ let f = class extends $t(z) {
           </uui-button>
 
           ${s.hasConflicts ? d`
-            <uui-button
-              look="danger"
-              label="Force sync — apply despite detected conflicts"
-              .state=${this._busy ? "loading" : void 0}
-              ?disabled=${this._busy}
-              @click=${() => this._runSync(!0)}>
-              Force Sync
-            </uui-button>
+            <span class="sync-hint">Resolve conflicts to sync, or —</span>
+            <div class="force-sync-wrap">
+              <span class="force-sync-label">Danger zone</span>
+              <uui-button
+                look="danger"
+                label="Force sync — override all conflicts and apply"
+                .state=${this._busy ? "loading" : void 0}
+                ?disabled=${this._busy}
+                @click=${() => this._runSync(!0)}>
+                Force Sync
+              </uui-button>
+            </div>
           ` : c}
         </div>
       </section>
@@ -998,6 +1002,7 @@ f.styles = mt`
       cursor: pointer;
     }
     select:disabled { opacity: 0.5; cursor: not-allowed; }
+    select:focus-visible { outline: 2px solid var(--uui-color-focus, #3544b1); outline-offset: 1px; }
 
     /* ── Summary counts ────────────────────────────────────────────── */
     .summary-bar {
@@ -1050,8 +1055,8 @@ f.styles = mt`
       border-radius: 3px;
       font-size: 0.7rem;
       font-weight: 600;
-      background: var(--uui-color-warning-standalone, #fff3cd);
-      color: var(--uui-color-warning-contrast, #7a4f00);
+      background: #fff3cd;
+      color: #7a4f00;
       white-space: nowrap;
     }
     .conflict-type.ModifiedInBoth  { background: #fff3cd; color: #7a4f00; }
@@ -1107,18 +1112,11 @@ f.styles = mt`
       padding: 8px 12px;
       border-radius: var(--uui-border-radius, 3px);
       font-size: 0.875rem;
-      border: 1px solid transparent;
+      border: none;
+      color: #fff;
     }
-    .message.error   {
-      background: var(--uui-color-danger-standalone, #f8d7da);
-      border-color: var(--uui-color-danger, #c82333);
-      color: #7d1a24;
-    }
-    .message.success {
-      background: var(--uui-color-positive-standalone, #d4edda);
-      border-color: var(--uui-color-positive, #28a745);
-      color: #155724;
-    }
+    .message.error   { background: var(--uui-color-danger-standalone, #b01c2e); }
+    .message.success { background: var(--uui-color-positive-standalone, #1c8140); }
     .empty-hint {
       color: var(--uui-color-text-alt, #888);
       font-style: italic;
@@ -1148,10 +1146,37 @@ f.styles = mt`
       color: var(--uui-color-text, #1a1a1a);
       font-size: inherit;
     }
+    .env-row input:focus-visible { outline: 2px solid var(--uui-color-focus, #3544b1); outline-offset: 1px; }
+
+    /* ── Sync actions ──────────────────────────────────────────────── */
+    .actions {
+      display: flex;
+      gap: var(--uui-size-space-3, 8px);
+      margin-top: var(--uui-size-space-4, 12px);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .sync-hint {
+      font-size: 0.8125rem;
+      color: var(--uui-color-text-alt, #777);
+      font-style: italic;
+    }
+    .force-sync-wrap {
+      display: flex;
+      align-items: center;
+      gap: var(--uui-size-space-3, 8px);
+      padding-left: var(--uui-size-space-4, 12px);
+      border-left: 2px solid var(--uui-color-danger-standalone, #b01c2e);
+      margin-left: var(--uui-size-space-3, 8px);
+    }
+    .force-sync-label {
+      font-size: 0.75rem;
+      color: var(--uui-color-danger-standalone, #b01c2e);
+      font-weight: 600;
+    }
 
     /* ── Utility ───────────────────────────────────────────────────── */
     uui-button + uui-button, uui-button + select { margin-left: 0; }
-    .actions { display: flex; gap: var(--uui-size-space-3, 8px); margin-top: var(--uui-size-space-4, 12px); align-items: center; flex-wrap: wrap; }
   `;
 $([
   g()
